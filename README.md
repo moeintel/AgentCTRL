@@ -1,7 +1,7 @@
 # AgentCTRL Core
 
 [![PyPI version](https://img.shields.io/pypi/v/agentctrl)](https://pypi.org/project/agentctrl/)
-[![CI](https://github.com/moeadnan/agentctrl/actions/workflows/ci.yml/badge.svg)](https://github.com/moeadnan/agentctrl/actions/workflows/ci.yml)
+[![CI](https://github.com/moeintel/agentctrl/actions/workflows/ci.yml/badge.svg)](https://github.com/moeintel/agentctrl/actions/workflows/ci.yml)
 [![Python 3.11+](https://img.shields.io/pypi/pyversions/agentctrl)](https://pypi.org/project/agentctrl/)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
@@ -450,4 +450,4 @@ python -m pytest tests/ -v
 
 ---
 
-Built by [Mohammad Abu Jafar](https://github.com/moeadnan).
+Built by [MoeIntel](https://moeintel.com). Created by [Mohammad Abu Jafar](https://github.com/moeadnan).

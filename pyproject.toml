@@ -4,14 +4,14 @@ build-backend = "hatchling.build"
 
 [project]
 name = "agentctrl"
-version = "0.1.0"
+version = "0.1.1"
 description = "The Institutional Governance Layer for AI Agents — intercept, evaluate, decide."
 readme = "README.md"
 license = "Apache-2.0"
 requires-python = ">=3.11"
 dependencies = []
 authors = [
-    { name = "Mohammad Abu Jafar" },
+    { name = "MoeIntel" },
 ]
 keywords = [
     "ai-agents",
@@ -37,9 +37,9 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/moeadnan/agentctrl"
-Repository = "https://github.com/moeadnan/agentctrl"
-Issues = "https://github.com/moeadnan/agentctrl/issues"
+Homepage = "https://moeintel.com"
+Repository = "https://github.com/moeintel/agentctrl"
+Issues = "https://github.com/moeintel/agentctrl/issues"
 
 [project.optional-dependencies]
 authority-graph = ["networkx>=3.0"]
