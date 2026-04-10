@@ -1,0 +1,23 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agentctrl"
+version = "0.1.0"
+description = "The Institutional Governance Layer for AI Agents — intercept, evaluate, decide."
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+authority-graph = ["networkx>=3.0"]
+langchain = ["langchain-core>=0.2"]
+openai-agents = ["openai-agents>=0.1"]
+crewai = ["crewai>=0.50"]
+all = ["networkx>=3.0", "langchain-core>=0.2", "openai-agents>=0.1", "crewai>=0.50"]
+dev = ["pytest", "pytest-asyncio", "ruff"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/agentctrl"]
