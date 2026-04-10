@@ -56,13 +56,11 @@ jobs:
       - name: Set up Python
         run: uv python install 3.13
 
-      - name: Install hatch
-        run: uv pip install hatch --system
-
       - name: Build package
-        run: hatch build
+        run: uvx hatch build
 
       - name: Verify wheel contents
         run: |
-          pip install dist/*.whl --target /tmp/verify
-          python -c "from agentctrl import RuntimeGateway; print('Import OK')"
+          uv venv /tmp/verify-venv
+          uv pip install dist/*.whl --python /tmp/verify-venv/bin/python
+          /tmp/verify-venv/bin/python -c "from agentctrl import RuntimeGateway; print('Import OK')"

@@ -42,7 +42,7 @@ except ImportError as e:
 
 from ..runtime_gateway import RuntimeGateway
 from ..types import ActionProposal
-from ..decorator import GovernanceBlockedError, GovernanceEscalatedError
+from ..decorator import GovernanceBlockedError, GovernanceEscalatedError  # noqa: F401 — re-exported
 
 
 class GovernedCrewTool(CrewBaseTool):
