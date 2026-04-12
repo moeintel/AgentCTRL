@@ -6,6 +6,19 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This pr
 
 ---
 
+## [0.2.2] — 2026-04-12
+
+### Added
+- **Advisory context on early exit.** When a pipeline stage short-circuits with ESCALATE or BLOCK, remaining stages (risk, conflict) still run as `ADVISORY` — their results are appended to the decision record for reviewer visibility but do not change the decision.
+- New `ADVISORY` status for `PipelineStageResult` (non-decision, informational).
+- 3 new tests: `test_advisory_context_on_autonomy_escalate`, `test_advisory_context_on_early_exit`, `test_allow_has_no_advisory_stages`.
+
+### Changed
+- `_run_pipeline()` early-exit paths now call `_collect_advisory_context()` instead of returning immediately.
+- Test count updated to 8 (was 5 before advisory context tests).
+
+---
+
 ## [0.2.1] — 2026-04-11
 
 ### Added

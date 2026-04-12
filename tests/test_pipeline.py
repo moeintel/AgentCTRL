@@ -94,3 +94,63 @@ async def test_hooks_called():
         autonomy_level=2,
     ))
     assert len(decisions) == 1
+
+
+@pytest.mark.asyncio
+async def test_advisory_context_on_autonomy_escalate():
+    """Level 1 agent escalates at autonomy; risk + conflict run as ADVISORY."""
+    from agentctrl import RuntimeGateway, ActionProposal
+
+    gateway = RuntimeGateway()
+    result = await gateway.validate(ActionProposal(
+        agent_id="junior-agent",
+        action_type="email.send",
+        action_params={"to": "user@example.com"},
+        autonomy_level=1,
+    ))
+    assert result["decision"] == "ESCALATE"
+    stages = result["pipeline"]
+    advisory_stages = [s for s in stages if s["status"] == "ADVISORY"]
+    assert len(advisory_stages) == 2, f"Expected 2 advisory stages, got {len(advisory_stages)}"
+    advisory_names = {s["stage"] for s in advisory_stages}
+    assert "risk_scoring" in advisory_names
+    assert "conflict_detection" in advisory_names
+
+
+@pytest.mark.asyncio
+async def test_advisory_context_on_early_exit():
+    """Early BLOCK/ESCALATE still collects advisory risk + conflict stages."""
+    from agentctrl import RuntimeGateway, ActionProposal
+    from agentctrl.policy_engine import PolicyEngine
+
+    policies = [{"action_type": "delete.*", "effect": "BLOCK", "reason": "Deletes are forbidden"}]
+    gateway = RuntimeGateway(policy_engine=PolicyEngine(policies=policies))
+    result = await gateway.validate(ActionProposal(
+        agent_id="analyst",
+        action_type="delete.records",
+        action_params={},
+        autonomy_level=3,
+    ))
+    assert result["decision"] in ("BLOCK", "ESCALATE")
+    advisory_stages = [s for s in result["pipeline"] if s["status"] == "ADVISORY"]
+    assert len(advisory_stages) >= 1, "At least one ADVISORY stage expected"
+    advisory_names = {s["stage"] for s in advisory_stages}
+    assert "risk_scoring" in advisory_names or "conflict_detection" in advisory_names
+
+
+@pytest.mark.asyncio
+async def test_allow_has_no_advisory_stages():
+    """Normal ALLOW path has no ADVISORY stages — all stages run as real decisions."""
+    from agentctrl import RuntimeGateway, ActionProposal
+
+    gateway = RuntimeGateway()
+    result = await gateway.validate(ActionProposal(
+        agent_id="ap_analyst",
+        action_type="invoice.approve",
+        action_params={"amount": 1000},
+        autonomy_level=2,
+        trust_context={"total_actions": 10, "success_rate": 0.95},
+    ))
+    assert result["decision"] == "ALLOW"
+    advisory_stages = [s for s in result["pipeline"] if s["status"] == "ADVISORY"]
+    assert len(advisory_stages) == 0

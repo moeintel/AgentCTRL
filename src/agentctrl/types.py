@@ -51,7 +51,7 @@ class ActionProposal:
 class PipelineStageResult:
     """Result from a single pipeline stage."""
     stage: str
-    status: str  # PASS | FAIL | ESCALATE | BLOCK
+    status: str  # PASS | FAIL | ESCALATE | BLOCK | ADVISORY
     details: dict = field(default_factory=dict)
     reason: str = ""
 

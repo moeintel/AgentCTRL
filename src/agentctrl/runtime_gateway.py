@@ -19,7 +19,9 @@ Runtime Governance Model — Layer 1
 The pipeline evaluates every ActionProposal through 5 sequential decision
 stages (autonomy → policy → authority → risk → conflict).  Each stage can
 short-circuit with BLOCK or ESCALATE.  If all stages pass, the decision
-is ALLOW.
+is ALLOW.  On early ESCALATE/BLOCK, remaining stages still run as ADVISORY
+context — their results are appended to the decision record for reviewer
+visibility but do not change the decision.
 
 The kill switch is an optional pre-gate callback (`kill_switch_fn`) so
 the library works without platform dependencies.  Fail-closed: any
@@ -154,9 +156,8 @@ class RuntimeGateway:
         if stage1.status == "BLOCK":
             return self._make_decision(proposal, stages, "BLOCK", stage1.reason, 0.0, "LOW")
         if stage1.status == "ESCALATE":
-            risk = await self.risk_engine.score(proposal)
-            stages.append(PipelineStageResult("risk_scoring", "INFO",
-                                               {"risk_score": risk.score, "risk_level": risk.level}))
+            risk, advisory = await self._collect_advisory_context(proposal, from_stage=1)
+            stages.extend(advisory)
             return self._make_decision(proposal, stages, "ESCALATE", stage1.reason,
                                        risk.score, risk.level, escalated_to="approver_required")
 
@@ -164,7 +165,8 @@ class RuntimeGateway:
         stage2 = await self.policy_engine.validate(proposal)
         stages.append(stage2)
         if stage2.status in ("BLOCK", "ESCALATE"):
-            risk = await self.risk_engine.score(proposal)
+            risk, advisory = await self._collect_advisory_context(proposal, from_stage=2)
+            stages.extend(advisory)
             return self._make_decision(proposal, stages, stage2.status, stage2.reason,
                                        risk.score, risk.level)
 
@@ -172,7 +174,8 @@ class RuntimeGateway:
         stage3 = await self.authority_engine.resolve(proposal)
         stages.append(stage3)
         if stage3.status in ("BLOCK", "ESCALATE"):
-            risk = await self.risk_engine.score(proposal)
+            risk, advisory = await self._collect_advisory_context(proposal, from_stage=3)
+            stages.extend(advisory)
             escalated_to = stage3.details.get("escalate_to")
             return self._make_decision(proposal, stages, stage3.status, stage3.reason,
                                        risk.score, risk.level, escalated_to=escalated_to)
@@ -187,6 +190,8 @@ class RuntimeGateway:
         )
         stages.append(stage4)
         if stage4.status == "ESCALATE":
+            _risk, advisory = await self._collect_advisory_context(proposal, from_stage=4)
+            stages.extend(advisory)
             return self._make_decision(proposal, stages, "ESCALATE", stage4.reason,
                                        risk.score, risk.level)
 
@@ -201,6 +206,40 @@ class RuntimeGateway:
         # ── Terminal: All stages passed → ALLOW ──────────────────────────────
         reason = f"All validation stages passed. Action '{proposal.action_type}' approved for execution."
         return self._make_decision(proposal, stages, "ALLOW", reason, risk.score, risk.level)
+
+    async def _collect_advisory_context(
+        self, proposal: ActionProposal, from_stage: int,
+    ) -> tuple:
+        """Run remaining pipeline stages as non-decision ADVISORY context.
+
+        Gives the human reviewer visibility into what risk and conflict
+        would have said, even though an earlier stage already decided.
+        Returns (risk_result, list_of_advisory_stages).
+        ``from_stage`` is the stage number that triggered the early exit
+        (1=autonomy, 2=policy, 3=authority, 4=risk).
+        """
+        advisory_stages: list[PipelineStageResult] = []
+        if from_stage < 4:
+            risk = await self.risk_engine.score(proposal)
+            advisory_stages.append(
+                PipelineStageResult(
+                    "risk_scoring", "ADVISORY",
+                    {"risk_score": risk.score, "risk_level": risk.level, "factors": risk.factors},
+                    f"Advisory: Risk level {risk.level} (score: {risk.score:.2f})",
+                )
+            )
+        else:
+            risk = None
+        if from_stage < 5:
+            conflict = await self.conflict_detector.check(proposal)
+            advisory_stages.append(
+                PipelineStageResult(
+                    "conflict_detection", "ADVISORY",
+                    {"original_status": conflict.status, **(conflict.details or {})},
+                    f"Advisory: {conflict.reason}",
+                )
+            )
+        return risk, advisory_stages
 
     async def _check_autonomy(self, proposal: ActionProposal) -> PipelineStageResult:
         level = proposal.autonomy_level

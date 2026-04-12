@@ -76,7 +76,7 @@ Those are institutional controls. They existed for human employees. They need to
 - **Fail-closed.** Any pipeline error produces BLOCK, never silent approval.
 - **Structural enforcement.** Policies are operator-based rule matching, not prompt instructions. Authority is graph traversal. Risk is weighted factor scoring. None of this is prompt engineering.
 
-> **Status:** 76 tests passing. Published on [PyPI](https://pypi.org/project/agentctrl/).
+> **Status:** 79 tests passing. Published on [PyPI](https://pypi.org/project/agentctrl/).
 
 ---
 
@@ -293,7 +293,7 @@ agent = Agent(role="analyst", tools=[governed_tool])
 
 ## Decision Pipeline
 
-Every action passes through 5 stages in order. Each can short-circuit.
+Every action passes through 5 stages in order. Each can short-circuit with BLOCK or ESCALATE. When a stage short-circuits, remaining stages still run as **ADVISORY** — their results are appended to the decision record for reviewer visibility but do not change the decision.
 
 ```
 Agent proposes action
@@ -305,6 +305,7 @@ Agent proposes action
     → Risk Scoring (how risky is this action in context?)
     → Conflict Detection (does this clash with other active workflows?)
     → Decision: ALLOW / ESCALATE / BLOCK
+         (+ ADVISORY stages from remaining pipeline on early exit)
 ```
 
 ### Policy Engine
@@ -400,7 +401,7 @@ result = await gateway.validate(proposal)
 python -m pytest tests/ -v
 ```
 
-76 tests covering: pipeline stages, fail-closed behavior, policy evaluation (AND/OR groups, 14 operators, temporal conditions), authority graph (delegation, SoD, limits, decay), risk scoring (13 dimensions, trust calibration, consequence class), conflict detection, `@governed` decorator, CLI, demo, audit logging, subscriptable record, empty authority default, instance isolation, and library boundary.
+79 tests covering: pipeline stages, advisory context, fail-closed behavior, policy evaluation (AND/OR groups, 14 operators, temporal conditions), authority graph (delegation, SoD, limits, decay), risk scoring (13 dimensions, trust calibration, consequence class), conflict detection, `@governed` decorator, CLI, demo, audit logging, subscriptable record, empty authority default, instance isolation, and library boundary.
 
 ## Requirements
 
