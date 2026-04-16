@@ -1,0 +1,1637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgentCTRL — Project Showcase</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --page-bg: #fffbf5;
+  --surface: #ffffff;
+  --card: #fdf6ec;
+  --card-2: #f5ede0;
+  --border: #e8dcc8;
+  --border-hi: #d4c4a8;
+  --text: #2a1a0c;
+  --text-2: #6b5540;
+  --text-3: #a08868;
+  --amber: #c87818;
+  --amber-light: #e8920a;
+  --gold: #e8920a;
+  --terracotta: #c96b38;
+  --mahogany: #3d2a18;
+  --deep: #2a1a0c;
+  --allow: #1a7840;
+  --allow-bg: #e8f5e9;
+  --escalate: #b87808;
+  --escalate-bg: #fff3e0;
+  --block: #c0392b;
+  --block-bg: #fdecea;
+  --blue-accent: #2a7ab8;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--page-bg);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.7;
+  overflow-x: hidden;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+.mono { font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace; }
+.serif { font-family: 'Libre Baskerville', 'Georgia', serif; }
+.display { font-family: 'Fraunces', serif; }
+
+/* ── HEADER BAR ─────────────────────────────────── */
+.top-bar {
+  position: sticky; top: 0; z-index: 10;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 32px;
+  background: rgba(255,251,245,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+
+.logo { display: flex; align-items: center; gap: 10px; }
+
+.logo-mark {
+  width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.logo-mark img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  filter: brightness(0.96) saturate(0.85) sepia(0.12);
+}
+
+.logo-text {
+  font-family: 'Fraunces', serif;
+  font-size: 16px; font-weight: 700; letter-spacing: -0.3px;
+  color: var(--mahogany);
+}
+.logo-text span { color: var(--amber); }
+
+.top-meta { display: flex; align-items: center; gap: 12px; }
+
+.badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+  color: var(--text-3); padding: 4px 12px;
+  border: 1px solid var(--border); border-radius: 100px;
+  background: var(--surface);
+}
+
+.badge .dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--allow); box-shadow: 0 0 6px var(--allow);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.35; } }
+
+/* ── HERO ─────────────────────────────────────────── */
+.hero {
+  position: relative;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 48px 32px 40px;
+  text-align: center;
+}
+
+.hero-logo-wrap {
+  position: relative;
+  width: 120px; height: 120px;
+  margin: 0 auto 18px;
+}
+.hero-logo-wrap img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  position: relative; z-index: 1;
+  filter: brightness(0.96) saturate(0.85) sepia(0.12);
+}
+.hero-logo-wrap canvas {
+  position: absolute;
+  top: -80px; left: -80px;
+  width: 280px; height: 280px;
+  pointer-events: none;
+}
+.hero-logo-wrap .hero-rings {
+  position: absolute;
+  top: -80px; left: -80px;
+  width: 280px; height: 280px;
+  pointer-events: none;
+  overflow: visible;
+}
+@keyframes ring-cw  { to { transform: rotate(360deg); } }
+@keyframes ring-ccw { to { transform: rotate(-360deg); } }
+@keyframes ring-breathe {
+  0%, 100% { opacity: var(--lo); }
+  50%      { opacity: var(--hi); }
+}
+.hr-1 { animation: ring-ccw  7s linear infinite; }
+.hr-2 { animation: ring-cw  11s linear infinite; animation-delay: -3.8s; }
+.hr-3 { animation: ring-ccw 16s linear infinite; animation-delay: -5.1s; }
+.hr-4 { animation: ring-cw  22s linear infinite; animation-delay: -8.2s; }
+.hr-5 { animation: ring-ccw 28s linear infinite; animation-delay: -6.7s; }
+.hr-6 { animation: ring-cw  35s linear infinite; animation-delay: -14s; }
+.hr-7 { animation: ring-ccw 45s linear infinite; animation-delay: -20.5s; }
+.hr-1 circle { --lo:0.03; --hi:0.26; animation: ring-breathe  7.0s ease-in-out infinite; }
+.hr-2 circle { --lo:0.03; --hi:0.29; animation: ring-breathe  7.3s ease-in-out infinite; animation-delay: -0.72s; }
+.hr-3 circle { --lo:0.04; --hi:0.32; animation: ring-breathe  7.6s ease-in-out infinite; animation-delay: -1.44s; }
+.hr-4 circle { --lo:0.04; --hi:0.35; animation: ring-breathe  7.9s ease-in-out infinite; animation-delay: -2.16s; }
+.hr-5 circle { --lo:0.05; --hi:0.38; animation: ring-breathe  8.2s ease-in-out infinite; animation-delay: -2.88s; }
+.hr-6 circle { --lo:0.05; --hi:0.41; animation: ring-breathe  8.5s ease-in-out infinite; animation-delay: -3.60s; }
+.hr-7 circle { --lo:0.06; --hi:0.44; animation: ring-breathe  8.8s ease-in-out infinite; animation-delay: -4.32s; }
+
+.hero h1 {
+  font-family: 'Fraunces', serif;
+  font-size: 48px; font-weight: 900; letter-spacing: -2px; line-height: 1.08;
+  margin-bottom: 6px;
+  color: var(--mahogany);
+}
+
+.hero h1 em {
+  font-style: normal;
+  color: var(--amber);
+}
+
+.hero .slogan {
+  font-family: 'Caveat', cursive;
+  font-size: 21px; color: var(--text-3); font-weight: 500;
+  margin-bottom: 16px;
+  letter-spacing: 0.3px;
+}
+
+.hero .sub {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 15px; color: var(--text-2); max-width: 600px; margin: 0 auto 28px;
+  line-height: 1.75;
+  font-style: italic;
+}
+
+.install-bar {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--mahogany); border-radius: 8px;
+  padding: 10px 20px;
+  box-shadow: 0 4px 16px rgba(42,26,12,0.15);
+}
+
+.install-bar .prompt { color: rgba(255,255,255,0.35); }
+.install-bar code { font-size: 13px; color: var(--gold); }
+
+/* ── INTRO SECTION ──────────────────────────────── */
+.intro-thesis {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 16px; color: var(--text-2);
+  line-height: 1.8;
+  margin-bottom: 36px;
+  margin-left: 14px;
+  font-style: italic;
+  padding: 20px 24px;
+  border-left: 3px solid var(--amber);
+  background: rgba(232,146,10,0.03);
+  border-radius: 0 8px 8px 0;
+}
+
+.intro-thesis strong {
+  font-style: normal;
+  color: var(--mahogany);
+}
+
+.intro-subsection {
+  margin-bottom: 36px;
+}
+
+.intro-subsection > :not(.intro-sub-tag) {
+  margin-left: 14px;
+}
+
+.intro-sub-tag {
+  font-family: 'Fraunces', serif;
+  font-size: 20px; font-weight: 700;
+  letter-spacing: -0.3px;
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+
+.intro-body-text {
+  font-size: 15px; color: var(--text-2); line-height: 1.75;
+}
+
+.intro-body-text + .intro-body-text { margin-top: 10px; }
+.intro-body-text strong { color: var(--text); }
+.intro-body-text em { color: var(--text-3); font-style: italic; }
+
+.intro-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.intro-card {
+  padding: 16px 20px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.intro-card .ic-head {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 6px;
+}
+
+.intro-card .ic-icon {
+  width: 28px; height: 28px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; flex-shrink: 0;
+}
+
+.intro-card .ic-title {
+  font-size: 14px; font-weight: 700; color: var(--mahogany);
+}
+
+.intro-card .ic-desc {
+  font-size: 13px; color: var(--text-2); line-height: 1.6;
+}
+
+.intro-moat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.moat-item {
+  padding: 14px 18px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.moat-item .mi-title {
+  font-size: 14px; font-weight: 700; color: var(--mahogany);
+  margin-bottom: 4px;
+}
+
+.moat-item .mi-desc {
+  font-size: 13px; color: var(--text-2); line-height: 1.6;
+}
+
+.intro-layers {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.layer-card {
+  padding: 16px 18px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  text-align: center;
+}
+
+.layer-card .lc-num {
+  font-family: 'Fraunces', serif;
+  font-size: 22px; font-weight: 900;
+  color: var(--amber);
+  margin-bottom: 4px;
+}
+
+.layer-card .lc-name {
+  font-size: 14px; font-weight: 700; color: var(--mahogany);
+  margin-bottom: 4px;
+}
+
+.layer-card .lc-desc {
+  font-size: 13px; color: var(--text-2); line-height: 1.6;
+}
+
+.layer-card.highlight {
+  border-color: rgba(200,120,24,0.3);
+  background: rgba(232,146,10,0.03);
+}
+
+.intro-directions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.intro-dir {
+  padding: 14px 18px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  display: flex; align-items: flex-start; gap: 12px;
+}
+
+.intro-dir .id-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; flex-shrink: 0;
+}
+
+.intro-dir .id-title {
+  font-size: 14px; font-weight: 700; color: var(--mahogany);
+}
+
+.intro-dir .id-desc {
+  font-size: 13px; color: var(--text-2); margin-top: 2px; line-height: 1.6;
+}
+
+.phase-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.phase-card {
+  padding: 14px 18px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.phase-card .pc-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.phase-card .pc-name {
+  font-size: 14px; font-weight: 700; color: var(--mahogany);
+  margin-bottom: 4px;
+}
+
+.phase-card .pc-desc {
+  font-size: 13px; color: var(--text-2); line-height: 1.6;
+}
+
+.phase-card.active {
+  border-color: rgba(26,120,64,0.3);
+}
+
+.phase-card.active .pc-tag { color: var(--allow); }
+
+.phase-card.future .pc-tag { color: var(--text-3); }
+
+/* ── STAT STRIP ─────────────────────────────────── */
+.stat-strip {
+  display: flex; justify-content: center; gap: 36px; flex-wrap: wrap;
+  padding: 20px 32px 28px;
+  max-width: 960px; margin: 0 auto;
+}
+
+.stat { text-align: center; }
+
+.stat .n {
+  font-family: 'Fraunces', serif;
+  font-size: 28px; font-weight: 900; letter-spacing: -1px;
+  color: var(--amber);
+}
+
+.stat .l {
+  font-size: 11px; color: var(--text-3); text-transform: uppercase;
+  letter-spacing: 1.5px; margin-top: 2px; font-weight: 600;
+}
+
+/* ── DIVIDER ────────────────────────────────────── */
+.divider { max-width: 960px; margin: 0 auto; border-top: 1px solid var(--border); opacity: 0.7; }
+
+/* ── SECTION ────────────────────────────────────── */
+.section {
+  max-width: 960px; margin: 0 auto;
+  padding: 48px 32px;
+}
+
+.section-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--amber); font-weight: 700; margin-bottom: 8px;
+}
+
+.section h2 {
+  font-family: 'Fraunces', serif;
+  font-size: 28px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 10px;
+  color: var(--mahogany);
+}
+
+.section .desc {
+  font-size: 15px; color: var(--text-2); max-width: 760px; margin-bottom: 28px;
+  line-height: 1.7;
+  margin-left: 14px;
+}
+
+/* ── ARCHITECTURE DIAGRAM ──────────────────────── */
+.arch-diagram {
+  position: relative;
+  padding: 0;
+}
+
+.arch-input {
+  text-align: center;
+  margin-bottom: 0;
+  position: relative;
+}
+
+.arch-box {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 20px;
+  background: var(--surface);
+  border: 2px solid var(--border-hi);
+  border-radius: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px; font-weight: 600;
+  color: var(--mahogany);
+  box-shadow: 0 2px 8px rgba(42,26,12,0.06);
+}
+
+.arch-box .ab-icon {
+  width: 24px; height: 24px; border-radius: 6px;
+  background: var(--card-2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px;
+}
+
+.arch-connector {
+  display: flex; justify-content: center; padding: 0;
+  position: relative; height: 28px;
+}
+
+.arch-connector::after {
+  content: '';
+  width: 2px; height: 100%;
+  background: var(--border-hi);
+  position: absolute; top: 0;
+}
+
+.arch-connector .arrow-down {
+  position: absolute; bottom: -5px;
+  width: 0; height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid var(--border-hi);
+}
+
+/* Governance Engine wrapper */
+.ge-wrapper {
+  border: 2px solid var(--amber);
+  border-radius: 14px;
+  padding: 20px;
+  position: relative;
+  background: rgba(232,146,10,0.03);
+}
+
+.ge-label {
+  position: absolute; top: -10px; left: 24px;
+  background: var(--page-bg);
+  padding: 0 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; font-weight: 700;
+  color: var(--amber);
+  letter-spacing: 0.5px;
+}
+
+.ge-badge {
+  position: absolute; top: -10px; right: 24px;
+  background: var(--amber);
+  color: white;
+  padding: 2px 10px;
+  border-radius: 100px;
+  font-size: 9px; font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Pre-pipeline row */
+.pre-pipeline {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+  margin-bottom: 12px;
+}
+
+.pp-step {
+  padding: 10px 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex; align-items: center; gap: 10px;
+}
+
+.pp-step .pp-icon {
+  width: 28px; height: 28px; border-radius: 6px;
+  background: rgba(200,120,24,0.1);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; flex-shrink: 0;
+}
+
+.pp-step .pp-name {
+  font-size: 13px; font-weight: 700; color: var(--text);
+}
+.pp-step .pp-desc {
+  font-size: 12px; color: var(--text-3); margin-top: 1px;
+}
+
+/* Inner connector */
+.inner-connector {
+  display: flex; justify-content: center; height: 20px;
+  position: relative;
+}
+.inner-connector::after {
+  content: ''; width: 2px; height: 100%;
+  background: var(--border);
+  position: absolute;
+}
+.inner-connector .arrow-down {
+  position: absolute; bottom: -4px;
+  width: 0; height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid var(--border);
+}
+
+/* RuntimeGateway */
+.rg-wrapper {
+  border: 2px solid var(--mahogany);
+  border-radius: 12px;
+  padding: 18px;
+  position: relative;
+  background: rgba(61,42,24,0.02);
+}
+
+.rg-label {
+  position: absolute; top: -10px; left: 20px;
+  background: var(--page-bg);
+  padding: 0 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; font-weight: 700;
+  color: var(--mahogany);
+}
+
+.rg-badge {
+  position: absolute; top: -10px; right: 20px;
+  background: var(--mahogany);
+  color: white;
+  padding: 2px 10px;
+  border-radius: 100px;
+  font-size: 9px; font-weight: 800;
+  letter-spacing: 0.3px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* Pre-gate section */
+.pregate-section {
+  margin-bottom: 12px;
+}
+
+.pregate-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; font-weight: 700;
+  color: var(--block);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.pregate-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+}
+
+.pg-step {
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1.5px solid rgba(192,57,43,0.2);
+  border-radius: 8px;
+  position: relative;
+  display: flex; align-items: center; gap: 10px;
+}
+
+.pg-step::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--block), transparent);
+  border-radius: 8px 8px 0 0;
+  opacity: 0.4;
+}
+
+.pg-step .pg-icon {
+  width: 28px; height: 28px; border-radius: 6px;
+  background: rgba(192,57,43,0.08);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; flex-shrink: 0;
+}
+
+.pg-step .pg-name { font-size: 13px; font-weight: 700; color: var(--text); }
+.pg-step .pg-desc { font-size: 12px; color: var(--text-3); margin-top: 1px; }
+
+/* Short-circuit annotation */
+.sc-note {
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px; color: var(--text-3);
+  letter-spacing: 0.5px;
+  padding: 3px 0;
+}
+
+/* Evaluation stages */
+.eval-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; font-weight: 700;
+  color: var(--amber);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.eval-stages {
+  display: flex; flex-direction: column; gap: 6px;
+}
+
+.eval-stage {
+  display: grid; grid-template-columns: 36px 1fr auto; gap: 12px;
+  padding: 12px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  align-items: center;
+  transition: all 0.15s;
+}
+
+.eval-stage:hover {
+  border-color: var(--border-hi);
+  box-shadow: 0 2px 8px rgba(42,26,12,0.06);
+}
+
+.eval-stage .es-num {
+  font-family: 'Fraunces', serif;
+  font-size: 26px; font-weight: 900;
+  color: var(--amber);
+  text-align: center;
+}
+
+.eval-stage .es-name {
+  font-size: 14px; font-weight: 700; color: var(--mahogany);
+}
+
+.eval-stage .es-desc {
+  font-size: 13px; color: var(--text-2); margin-top: 2px; line-height: 1.6;
+}
+
+.eval-stage .es-detail {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: var(--text-3);
+  padding: 4px 10px;
+  background: var(--card);
+  border-radius: 100px;
+  white-space: nowrap;
+}
+
+/* Decision output */
+.decision-output {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.decision-row {
+  display: inline-flex; gap: 10px; margin-top: 8px;
+}
+
+.dec-chip {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: 1.5px solid;
+}
+
+.dec-chip.allow {
+  border-color: rgba(26,120,64,0.3);
+  background: var(--allow-bg);
+}
+.dec-chip.escalate {
+  border-color: rgba(184,120,8,0.3);
+  background: var(--escalate-bg);
+}
+.dec-chip.block {
+  border-color: rgba(192,57,43,0.3);
+  background: var(--block-bg);
+}
+
+.dec-chip .dc-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+}
+.dec-chip.allow .dc-dot { background: var(--allow); box-shadow: 0 0 8px rgba(26,120,64,0.3); }
+.dec-chip.escalate .dc-dot { background: var(--escalate); box-shadow: 0 0 8px rgba(184,120,8,0.3); }
+.dec-chip.block .dc-dot { background: var(--block); box-shadow: 0 0 8px rgba(192,57,43,0.3); }
+
+.dec-chip .dc-label { font-size: 13px; font-weight: 700; }
+.dec-chip.allow .dc-label { color: var(--allow); }
+.dec-chip.escalate .dc-label { color: var(--escalate); }
+.dec-chip.block .dc-label { color: var(--block); }
+
+.dec-chip .dc-desc { font-size: 10px; color: var(--text-3); }
+
+.advisory-note {
+  margin-top: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: var(--text-3);
+  letter-spacing: 0.3px;
+}
+.advisory-note em {
+  font-style: normal; color: var(--amber); font-weight: 700;
+}
+
+/* Execution output */
+.exec-output {
+  margin-top: 12px;
+  text-align: center;
+}
+
+.exec-box {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 20px;
+  background: var(--surface);
+  border: 1.5px dashed var(--border-hi);
+  border-radius: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; color: var(--text-2);
+}
+
+.exec-box .eb-icon { font-size: 14px; }
+
+/* ── TERMINAL DEMO ──────────────────────────────── */
+.terminal {
+  background: var(--mahogany);
+  border: 1px solid rgba(61,42,24,0.5);
+  border-radius: 12px;
+  overflow: hidden;
+  font-family: 'JetBrains Mono', 'SF Mono', monospace;
+  font-size: 12px; line-height: 1.65;
+  box-shadow: 0 8px 32px rgba(42,26,12,0.15);
+}
+
+.term-bar {
+  display: flex; align-items: center; gap: 6px;
+  padding: 10px 14px;
+  background: rgba(42,26,12,0.6);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.td { width: 10px; height: 10px; border-radius: 50%; }
+.td.r { background: #ff5f57; }
+.td.y { background: #febc2e; }
+.td.g { background: #28c840; }
+
+.term-title { margin-left: 8px; font-size: 11px; color: rgba(255,255,255,0.3); }
+
+.term-body { padding: 16px 18px; overflow-x: auto; color: rgba(255,255,255,0.7); }
+
+.tl { white-space: pre; }
+.tl .a { color: #4ade80; }
+.tl .e { color: #fbbf24; }
+.tl .bk { color: #f87171; }
+.tl .d { color: rgba(255,255,255,0.25); }
+.tl .ag { color: #60a5fa; }
+.tl .lb { color: rgba(255,255,255,0.55); }
+.tl .rk { color: #c084fc; }
+.tl .rs { color: #fbbf24; font-style: italic; }
+.tl .br { color: rgba(255,255,255,0.08); }
+
+/* ── FEATURE GRID ───────────────────────────────── */
+.feat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.feat {
+  padding: 18px 20px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  transition: all 0.15s;
+}
+
+.feat:hover {
+  border-color: var(--border-hi);
+  box-shadow: 0 2px 12px rgba(42,26,12,0.06);
+}
+
+.feat .f-head {
+  display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+}
+
+.feat .f-num {
+  font-family: 'Fraunces', serif;
+  font-size: 20px; font-weight: 900; letter-spacing: -0.5px;
+  color: var(--amber);
+}
+
+.feat .f-title {
+  font-size: 14px; font-weight: 700; color: var(--mahogany);
+}
+.feat .f-desc { font-size: 13px; color: var(--text-2); line-height: 1.6; }
+
+/* ── TWO-COL COMPACT ────────────────────────────── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+
+.prop-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+
+.prop-list li {
+  display: flex; align-items: flex-start; gap: 8px;
+  font-size: 14px; color: var(--text-2); line-height: 1.6;
+}
+
+.prop-list li .ck {
+  color: var(--allow); font-weight: 800; flex-shrink: 0;
+  font-size: 14px;
+}
+.prop-list li strong { color: var(--text); }
+
+/* ── CODE ───────────────────────────────────────── */
+.code {
+  background: var(--mahogany);
+  border-radius: 10px;
+  padding: 18px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', 'SF Mono', monospace;
+  font-size: 12.5px; line-height: 1.65;
+  box-shadow: 0 4px 16px rgba(42,26,12,0.1);
+}
+
+.code .kw { color: #c792ea; }
+.code .fn { color: #82aaff; }
+.code .str { color: #c3e88d; }
+.code .num { color: #f78c6c; }
+.code .cm { color: rgba(255,255,255,0.3); }
+.code .op { color: #89ddff; }
+
+/* ── STRATEGY CARDS ─────────────────────────────── */
+.strat-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.strat-card {
+  padding: 22px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.strat-card .sc-title {
+  font-family: 'Fraunces', serif;
+  font-size: 16px; font-weight: 700; margin-bottom: 6px;
+}
+
+.strat-card .sc-body { font-size: 13px; color: var(--text-2); line-height: 1.6; }
+
+.strat-card .sc-tag {
+  display: inline-block; margin-top: 10px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 100px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.strat-card.pub { border-color: rgba(26,120,64,0.25); }
+.strat-card.pub .sc-title { color: var(--allow); }
+.strat-card.pub .sc-tag { background: var(--allow-bg); color: var(--allow); }
+
+.strat-card.priv { border-color: rgba(200,120,24,0.25); }
+.strat-card.priv .sc-title { color: var(--amber); }
+.strat-card.priv .sc-tag { background: rgba(232,146,10,0.08); color: var(--amber); }
+
+/* ── TECH PILLS ─────────────────────────────────── */
+.tech-pills {
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+
+.tech-pill {
+  font-size: 11px; font-weight: 700;
+  padding: 5px 14px; border-radius: 100px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-2);
+}
+
+/* ── FOOTER ─────────────────────────────────────── */
+.footer {
+  text-align: center; padding: 36px 32px;
+  color: var(--text-3); font-size: 13px;
+  border-top: 1px solid var(--border);
+  max-width: 960px; margin: 24px auto 0;
+}
+
+.footer a { color: var(--amber); text-decoration: none; font-weight: 700; }
+.footer a:hover { text-decoration: underline; }
+
+/* ── TABLE OF CONTENTS ──────────────────────────── */
+.toc {
+  position: fixed;
+  top: 50%;
+  right: 24px;
+  transform: translateY(-50%);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.toc a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 14px 7px 0;
+  text-decoration: none;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  color: var(--text-3);
+  transition: color 0.2s, transform 0.2s;
+  white-space: nowrap;
+}
+
+.toc a:hover {
+  color: var(--amber);
+}
+
+.toc a.active {
+  color: var(--amber);
+}
+
+.toc a .toc-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--border);
+  flex-shrink: 0;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+}
+
+.toc a:hover .toc-dot {
+  background: var(--amber);
+}
+
+.toc a.active .toc-dot {
+  background: var(--amber);
+  box-shadow: 0 0 8px rgba(200,120,24,0.4);
+  transform: scale(1.4);
+}
+
+/* ── RESPONSIVE ─────────────────────────────────── */
+@media (max-width: 1200px) {
+  .toc a { font-size: 0; gap: 0; padding: 6px 8px; }
+  .toc a .toc-dot { width: 7px; height: 7px; }
+}
+
+@media (max-width: 700px) {
+  .toc { display: none; }
+  .hero h1 { font-size: 34px; letter-spacing: -1.5px; }
+  .hero .slogan { font-size: 18px; }
+  .pre-pipeline, .pregate-row { grid-template-columns: 1fr; }
+  .eval-stage { grid-template-columns: 28px 1fr; }
+  .eval-stage .es-detail { display: none; }
+  .feat-grid, .two-col, .strat-row { grid-template-columns: 1fr; }
+  .intro-two-col, .intro-moat-grid, .intro-layers, .intro-directions, .phase-row { grid-template-columns: 1fr; }
+  .stat-strip { gap: 20px; }
+  .decision-row { flex-direction: column; align-items: center; }
+  .section { padding: 36px 20px; }
+}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- ── TOP BAR ────────────────────────────────────── -->
+<div class="top-bar">
+  <div class="logo">
+    <div class="logo-mark"><img src="frontend/public/brand-logo-v3.svg" alt=""></div>
+    <div class="logo-text">Agent<span>CTRL</span></div>
+  </div>
+  <div class="top-meta">
+    <div class="badge"><span class="dot"></span> v0.2.2 on PyPI</div>
+    <div class="badge">Apache 2.0</div>
+  </div>
+</div>
+
+<!-- ── TABLE OF CONTENTS ───────────────────────────── -->
+<nav class="toc" id="toc">
+  <a href="#introduction"><span class="toc-dot"></span>Introduction</a>
+  <a href="#pipeline"><span class="toc-dot"></span>Pipeline</a>
+  <a href="#core"><span class="toc-dot"></span>Core</a>
+  <a href="#demo"><span class="toc-dot"></span>Demo</a>
+  <a href="#platform"><span class="toc-dot"></span>Platform</a>
+  <a href="#strategy"><span class="toc-dot"></span>Strategy</a>
+</nav>
+
+<!-- ── HERO ────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-logo-wrap">
+    <canvas id="haloCanvas"></canvas>
+    <svg class="hero-rings" viewBox="0 0 280 280">
+      <g class="hr-1" style="transform-origin:140px 152px"><circle cx="140" cy="152" r="33.6" fill="none" stroke="#d08030" stroke-width="0.6" stroke-dasharray="2 4.4" stroke-linecap="round"/></g>
+      <g class="hr-2" style="transform-origin:140px 152px"><circle cx="140" cy="152" r="38.4" fill="none" stroke="#c47028" stroke-width="0.7" stroke-dasharray="7 8.1" stroke-linecap="round"/></g>
+      <g class="hr-3" style="transform-origin:140px 152px"><circle cx="140" cy="152" r="43.2" fill="none" stroke="#ba6422" stroke-width="0.8" stroke-dasharray="3.6 2.4 1.2 5.6" stroke-linecap="round"/></g>
+      <g class="hr-4" style="transform-origin:140px 152px"><circle cx="140" cy="152" r="48" fill="none" stroke="#d07830" stroke-width="0.8" stroke-dasharray="0.8 2.9" stroke-linecap="round"/></g>
+      <g class="hr-5" style="transform-origin:140px 152px"><circle cx="140" cy="152" r="52.8" fill="none" stroke="#a85820" stroke-width="1.0" stroke-dasharray="3 24.6" stroke-linecap="round"/></g>
+      <g class="hr-6" style="transform-origin:140px 152px"><circle cx="140" cy="152" r="57.6" fill="none" stroke="#b46428" stroke-width="1.1" stroke-dasharray="4.8 2.0 1.6 2.0" stroke-linecap="round"/></g>
+      <g class="hr-7" style="transform-origin:140px 152px"><circle cx="140" cy="152" r="62.4" fill="none" stroke="#c06c2a" stroke-width="1.2" stroke-dasharray="1.6 9.3" stroke-linecap="round"/></g>
+    </svg>
+    <img src="frontend/public/brand-logo-v3.svg" alt="">
+  </div>
+  <h1>Agent<em>CTRL</em></h1>
+  <p class="slogan">AI. on Your Terms.</p>
+  <p class="sub">Institutional control layer for AI agent actions. Authority graphs, policy evaluation, delegation chains, risk scoring, separation of duty. Before execution.</p>
+  <div class="install-bar mono">
+    <span class="prompt">$</span>
+    <code>pip install agentctrl</code>
+  </div>
+</section>
+
+<script>
+(function() {
+  var canvas = document.getElementById('haloCanvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var SIZE = 120, CW = 280, TAU = Math.PI * 2, D2R = Math.PI / 180;
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = CW * dpr; canvas.height = CW * dpr;
+  ctx.scale(dpr, dpr);
+
+  var cx = CW / 2, cy = CW / 2 + SIZE * 0.10;
+  var hX = CW / 2, hY = CW / 2;
+  var cosTilt = Math.cos(30 * D2R), sinTilt = Math.sin(30 * D2R);
+
+  var LAYERS = [
+    { r: 0.30, speed: 1.20, color: '#d08030', dot: 0.0028 },
+    { r: 0.44, speed: 1.00, color: '#c47028', dot: 0.0042 },
+    { r: 0.56, speed: 0.82, color: '#b86020', dot: 0.0058 },
+    { r: 0.68, speed: 0.65, color: '#a85418', dot: 0.0032 },
+  ];
+  var LATS = [-72,-58,-44,-30,-16,-4,4,16,30,44,58,72];
+  var N_EQ = 40, RS = 0.000075, SF = 8, LD = 0.40;
+
+  var pts = [];
+  for (var li = 0; li < LAYERS.length; li++) {
+    var L = LAYERS[li];
+    for (var ai = 0; ai < LATS.length; ai++) {
+      var lat = LATS[ai] * D2R, cL = Math.cos(lat), sL = Math.sin(lat);
+      var n = Math.max(4, Math.round(N_EQ * Math.abs(cL)));
+      var rs = L.speed * (1 - LD * Math.abs(sL));
+      for (var i = 0; i < n; i++) {
+        pts.push({ cL:cL, sL:sL, t0:(i/n)*TAU, rs:rs, R:L.r*SIZE, dR:L.dot*SIZE, col:L.color, tp:Math.random()*TAU, tf:0.0002+Math.random()*0.0002 });
+      }
+    }
+  }
+
+  var t0 = null;
+  function tick(ts) {
+    if (t0 === null) t0 = ts;
+    var t = ts - t0;
+    ctx.clearRect(0, 0, CW, CW);
+    var cosG = Math.cos(t * RS), sinG = Math.sin(t * RS);
+    var drawn = [];
+    for (var i = 0; i < pts.length; i++) {
+      var p = pts[i];
+      var theta = p.t0 + t * p.rs * RS * SF;
+      var cT = Math.cos(theta), sT = Math.sin(theta);
+      var x0 = p.cL * cT, y0 = p.sL, z0 = p.cL * sT;
+      var y1 = y0 * cosTilt - z0 * sinTilt, z1 = y0 * sinTilt + z0 * cosTilt;
+      var x2 = x0 * cosG + z1 * sinG, y2 = y1, z2 = -x0 * sinG + z1 * cosG;
+      var dT = (z2 + 1) * 0.5, adj = dT * 0.72 + 0.14;
+      var fA = 0.78, bA = fA * 0.52, twk = 0.04 * Math.sin(t * p.tf + p.tp);
+      var sx = cx + x2 * p.R, sy = cy + y2 * p.R;
+      var dist = Math.sqrt((sx-hX)*(sx-hX)+(sy-hY)*(sy-hY));
+      if (dist < SIZE * 0.30) continue;
+      var hs = dist < SIZE * 0.46 ? (dist - SIZE*0.30)/(SIZE*0.16) : 1;
+      var alpha = Math.max(0, Math.min(1, (bA + (fA-bA)*adj + twk) * hs));
+      drawn.push({ x:sx, y:sy, z:z2, a:alpha, r:p.dR, c:p.col });
+    }
+    drawn.sort(function(a,b){ return a.z - b.z; });
+    var fStart = 0;
+    while (fStart < drawn.length && drawn[fStart].z < 0) fStart++;
+    ctx.save(); ctx.filter = 'blur(1.8px)';
+    for (var i = 0; i < fStart; i++) { var d = drawn[i]; ctx.globalAlpha = d.a; ctx.fillStyle = d.c; ctx.beginPath(); ctx.arc(d.x,d.y,Math.max(d.r,0.28),0,TAU); ctx.fill(); }
+    ctx.restore();
+    for (var i = fStart; i < drawn.length; i++) { var d = drawn[i]; ctx.globalAlpha = d.a; ctx.fillStyle = d.c; ctx.beginPath(); ctx.arc(d.x,d.y,Math.max(d.r,0.28),0,TAU); ctx.fill(); }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+
+<!-- ── INTRODUCTION ─────────────────────────────────── -->
+<section class="section" id="introduction">
+  <div class="section-tag">Introduction</div>
+  <h2>The project</h2>
+
+  <p class="intro-thesis">In a world where AI agents are economic actors, AgentCTRL is the institutional control layer that makes their tool-mediated actions <strong>verifiable, bounded, and auditable</strong>. Whether you are one person with five agents or an organization with five thousand.</p>
+
+  <!-- The Problem -->
+  <div class="intro-subsection">
+    <div class="intro-sub-tag" style="color:var(--block);">The problem</div>
+    <p class="intro-body-text">AI agents are becoming <strong>economic actors</strong>. They approve invoices, deploy infrastructure, commit budgets, and access sensitive data on behalf of real principals. Model providers answer <em>&ldquo;is this output safe?&rdquo;</em> (model-level safety). Nobody answers: <strong>&ldquo;Is this agent authorized to commit these resources, and can we prove it?&rdquo;</strong> (institutional control). Those are different problems owned by different stakeholders.</p>
+  </div>
+
+  <!-- What AgentCTRL Is -->
+  <div class="intro-subsection">
+    <div class="intro-sub-tag" style="color:var(--amber);">What AgentCTRL is</div>
+    <p class="intro-body-text">A <strong>governed execution layer</strong>. Not an agent framework, not an orchestration platform, not a chatbot. A sequential decision pipeline that sits between an agent's decision to act and the actual execution. Every proposed tool call is evaluated through five stages (autonomy, policy, authority, risk, conflict) with cross-cutting controls (kill switch, rate limiting, fail-closed error handling, signed audit). The tool call does not happen unless the pipeline approves it.</p>
+    <p class="intro-body-text">One decorator (<code style="color:var(--amber);">@governed</code>) or one <code style="color:var(--amber);">gateway.validate()</code> call. Works with any framework, any model provider. Zero LLM dependencies in governance.</p>
+    <div class="intro-two-col">
+      <div class="intro-dir">
+        <div class="id-icon" style="background:rgba(26,122,184,0.08); color:var(--blue-accent);">&#8593;</div>
+        <div>
+          <div class="id-title">Outbound Governance</div>
+          <div class="id-desc">Your agents act on behalf of your organization. Enforce authority limits, policies, and risk thresholds before they execute.</div>
+        </div>
+      </div>
+      <div class="intro-dir">
+        <div class="id-icon" style="background:rgba(200,120,24,0.08); color:var(--amber);">&#8595;</div>
+        <div>
+          <div class="id-title">Inbound Governance</div>
+          <div class="id-desc">External agents call your APIs, MCP tools, or webhooks. Verify and authorize them before they can do anything.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Adoption Unlock -->
+  <div class="intro-subsection">
+    <div class="intro-sub-tag" style="color:var(--blue-accent);">The adoption unlock</div>
+    <p class="intro-body-text">The barrier to enterprise AI agent deployment is not capability. It is <strong>accountability</strong>. Organizations cannot deploy agents into production without answering three questions:</p>
+    <div class="intro-two-col" style="grid-template-columns: 1fr 1fr 1fr;">
+      <div class="intro-card" style="text-align:center; border-color:rgba(42,122,184,0.2);">
+        <div class="ic-title" style="color:var(--blue-accent); margin-bottom:4px;">What did the agent do?</div>
+        <div class="ic-desc">Full decision trail with signed, append-only audit logging.</div>
+      </div>
+      <div class="intro-card" style="text-align:center; border-color:rgba(42,122,184,0.2);">
+        <div class="ic-title" style="color:var(--blue-accent); margin-bottom:4px;">Why was it allowed?</div>
+        <div class="ic-desc">Pipeline trace: every stage result, risk score, and reasoning. On early exit, remaining stages still run as advisory context.</div>
+      </div>
+      <div class="intro-card" style="text-align:center; border-color:rgba(42,122,184,0.2);">
+        <div class="ic-title" style="color:var(--blue-accent); margin-bottom:4px;">Who authorized it?</div>
+        <div class="ic-desc">Authority graph, delegation chain, and escalation provenance.</div>
+      </div>
+    </div>
+    <p class="intro-body-text">Without those answers, legal will not sign off, compliance will not certify, and leadership will not approve production deployment. AgentCTRL provides those answers. The governance surface that turns agent experimentation into production deployment.</p>
+  </div>
+
+  <!-- Why governance is not a feature -->
+  <div class="intro-subsection">
+    <div class="intro-sub-tag" style="color:var(--mahogany);">Why governance will not be absorbed</div>
+    <p class="intro-body-text">Basic guardrails (allow/deny lists, content filtering, simple human-in-the-loop) will be absorbed by frameworks and model providers. What will not:</p>
+    <div class="intro-moat-grid">
+      <div class="moat-item">
+        <div class="mi-title">Multi-model governance</div>
+        <div class="mi-desc">OpenAI cannot govern agents running on Claude or Llama. Cross-model enforcement is structurally impossible for any single provider.</div>
+      </div>
+      <div class="moat-item">
+        <div class="mi-title">Organization-specific authority graphs</div>
+        <div class="mi-desc">&ldquo;VP approves up to $50k, CFO above that&rdquo; is org structure, not AI capability. Providers cannot ship your customer's org chart.</div>
+      </div>
+      <div class="moat-item">
+        <div class="mi-title">Regulatory audit trails</div>
+        <div class="mi-desc">Auditors do not trust the system being governed to audit itself. Independent enforcement with signed, append-only trails is a compliance requirement.</div>
+      </div>
+      <div class="moat-item">
+        <div class="mi-title">Cross-agent policy composition</div>
+        <div class="mi-desc">15 agents across procurement, finance, HR. The governance question is composite organizational risk, not single-action safety.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Architecture Layers -->
+  <div class="intro-subsection">
+    <div class="intro-sub-tag" style="color:var(--amber);">Three concentric layers</div>
+    <p class="intro-body-text">The core is designed to be separable from the platform. The library runs with zero infrastructure. The platform adds persistence, UI, and operational surfaces.</p>
+    <div class="intro-layers">
+      <div class="layer-card">
+        <div class="lc-num">1</div>
+        <div class="lc-name">Interception Core</div>
+        <div class="lc-desc">The governance pipeline: 2 pre-gates + 5 sequential stages + fail-closed enforcement + execution control plane.</div>
+      </div>
+      <div class="layer-card highlight">
+        <div class="lc-num">2</div>
+        <div class="lc-name">Standalone Library</div>
+        <div class="lc-desc"><span class="mono" style="color:var(--amber);font-size:11px;">pip install agentctrl</span><br>Core extracted as a package. Zero required dependencies. 3 SDK adapters (LangChain, OpenAI Agents, CrewAI). <code style="font-size:11px;">@governed</code> decorator. CLI. Apache 2.0.</div>
+      </div>
+      <div class="layer-card">
+        <div class="lc-num">3</div>
+        <div class="lc-name">Platform Shell</div>
+        <div class="lc-desc">Full-stack application: Next.js 15 UI, FastAPI backend, PostgreSQL, Redis, Prometheus. 12 routes, 203 endpoints, 37 models.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trust Economics -->
+  <div class="intro-subsection" style="margin-bottom:0;">
+    <div class="intro-sub-tag" style="color:var(--amber);">Trust economics</div>
+    <p class="intro-body-text">The architecture is designed to support an evolution from static rule enforcement to <strong>optimizing the allocation of scarce human judgment</strong> across unlimited AI capacity. The foundation is already live: a trust-risk feedback loop where agents earn trust through demonstrated reliability and lose it through failures. No policy change required. The flywheel and brake are structural.</p>
+    <p class="intro-body-text">How it works today: every pipeline decision updates the agent's trust profile. Proven agents (50+ actions, >90% success) earn up to 15% risk reduction. New agents (&lt;5 actions) receive a risk surcharge. Per-action-type accuracy tracking scales both the surcharge and discount. If a trusted agent starts failing, the discount shrinks and more actions get escalated automatically.</p>
+    <div class="phase-row">
+      <div class="phase-card active">
+        <div class="pc-tag">Phase 1 - Now</div>
+        <div class="pc-name">Static Governance</div>
+        <div class="pc-desc">Configurable policies, authority graphs, risk scoring with 13 dimensions, signed audit trails. Implemented and verified.</div>
+      </div>
+      <div class="phase-card future">
+        <div class="pc-tag">Phase 2 - 12 to 18 months</div>
+        <div class="pc-name">Adaptive Governance</div>
+        <div class="pc-desc">Dynamic trust calibration, automatic autonomy adjustment, outcome-informed scoring. Data model planted.</div>
+      </div>
+      <div class="phase-card future">
+        <div class="pc-tag">Phase 3 - 24 to 36 months</div>
+        <div class="pc-name">Cross-Boundary Trust</div>
+        <div class="pc-desc">Agents from different principals negotiate through a shared governance layer. Thesis only.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<div class="stat-strip">
+  <div class="stat"><div class="n">5</div><div class="l">Pipeline Stages</div></div>
+  <div class="stat"><div class="n">342</div><div class="l">Backend Tests</div></div>
+  <div class="stat"><div class="n">82</div><div class="l">Library Tests</div></div>
+  <div class="stat"><div class="n">203</div><div class="l">API Endpoints</div></div>
+  <div class="stat"><div class="n">37</div><div class="l">DB Models</div></div>
+  <div class="stat"><div class="n">24</div><div class="l">API Routers</div></div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ── DECISION PIPELINE — ARCHITECTURE DIAGRAM ─── -->
+<section class="section" id="pipeline">
+  <div class="section-tag">Decision Pipeline</div>
+  <h2>Architecture: 2 pre-gates + 5 sequential stages</h2>
+  <p class="desc">Every agent action is intercepted, evaluated, and decided before execution. Each stage can short-circuit. Remaining stages run as advisory context.</p>
+
+  <div class="arch-diagram">
+
+    <!-- ActionProposal input -->
+    <div class="arch-input">
+      <div class="arch-box">
+        <div class="ab-icon">&#9654;</div>
+        ActionProposal
+      </div>
+    </div>
+
+    <div class="arch-connector"><div class="arrow-down"></div></div>
+
+    <!-- GovernanceEngine wrapper -->
+    <div class="ge-wrapper">
+      <div class="ge-label">GovernanceEngine</div>
+      <div class="ge-badge">fail-closed</div>
+
+      <!-- Pre-pipeline steps -->
+      <div class="pre-pipeline">
+        <div class="pp-step">
+          <div class="pp-icon">&#128100;</div>
+          <div>
+            <div class="pp-name">Agent Identity Resolution</div>
+            <div class="pp-desc">Resolve agent_id &rarr; known record; auto-register unknown agents</div>
+          </div>
+        </div>
+        <div class="pp-step">
+          <div class="pp-icon">&#128274;</div>
+          <div>
+            <div class="pp-name">Trust Context Preload</div>
+            <div class="pp-desc">Load AgentTrustProfile before pipeline run</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="inner-connector"><div class="arrow-down"></div></div>
+
+      <!-- RuntimeGateway -->
+      <div class="rg-wrapper">
+        <div class="rg-label">RuntimeGateway</div>
+        <div class="rg-badge">sequential</div>
+
+        <!-- Pre-gates -->
+        <div class="pregate-section">
+          <div class="pregate-label">Pre-Gates &mdash; can halt before evaluation</div>
+          <div class="pregate-row">
+            <div class="pg-step">
+              <div class="pg-icon">&#9888;</div>
+              <div>
+                <div class="pg-name">Kill Switch</div>
+                <div class="pg-desc">Emergency halt: global, per-agent, or per-action-type</div>
+              </div>
+            </div>
+            <div class="pg-step">
+              <div class="pg-icon">&#9201;</div>
+              <div>
+                <div class="pg-name">Rate Limiter</div>
+                <div class="pg-desc">Sliding-window frequency check; emits rate_pressure signal</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sc-note">&#9660; short-circuit on BLOCK &middot; continue on pass</div>
+
+        <!-- 5 evaluation stages -->
+        <div class="eval-label">Evaluation Stages &mdash; sequential, each can short-circuit</div>
+        <div class="eval-stages">
+          <div class="eval-stage">
+            <div class="es-num">1</div>
+            <div>
+              <div class="es-name">Autonomy Check</div>
+              <div class="es-desc">Is this agent's clearance level sufficient for this action type?</div>
+            </div>
+            <div class="es-detail">scope table</div>
+          </div>
+          <div class="eval-stage">
+            <div class="es-num">2</div>
+            <div>
+              <div class="es-name">Policy Engine</div>
+              <div class="es-desc">Does this action violate organizational rules?</div>
+            </div>
+            <div class="es-detail">14 operators</div>
+          </div>
+          <div class="eval-stage">
+            <div class="es-num">3</div>
+            <div>
+              <div class="es-name">Authority Graph</div>
+              <div class="es-desc">Does this agent have sufficient delegated authority?</div>
+            </div>
+            <div class="es-detail">NetworkX DAG</div>
+          </div>
+          <div class="eval-stage">
+            <div class="es-num">4</div>
+            <div>
+              <div class="es-name">Risk Scoring</div>
+              <div class="es-desc">How risky is this action in its current context?</div>
+            </div>
+            <div class="es-detail">13 dimensions</div>
+          </div>
+          <div class="eval-stage">
+            <div class="es-num">5</div>
+            <div>
+              <div class="es-name">Conflict Detection</div>
+              <div class="es-desc">Does this clash with other active workflows or budgets?</div>
+            </div>
+            <div class="es-detail">resource model</div>
+          </div>
+        </div>
+
+      </div><!-- /rg-wrapper -->
+
+      <!-- Decision output -->
+      <div class="decision-output">
+        <div class="inner-connector" style="height: 16px;"><div class="arrow-down"></div></div>
+        <div class="decision-row">
+          <div class="dec-chip allow">
+            <div class="dc-dot"></div>
+            <div><div class="dc-label">ALLOW</div><div class="dc-desc">All stages passed</div></div>
+          </div>
+          <div class="dec-chip escalate">
+            <div class="dc-dot"></div>
+            <div><div class="dc-label">ESCALATE</div><div class="dc-desc">Needs human approval</div></div>
+          </div>
+          <div class="dec-chip block">
+            <div class="dc-dot"></div>
+            <div><div class="dc-label">BLOCK</div><div class="dc-desc">Hard stop + audit trail</div></div>
+          </div>
+        </div>
+        <div class="advisory-note">On early exit, remaining stages run as <em>ADVISORY</em> &mdash; appended to the decision record for reviewer context</div>
+      </div>
+
+    </div><!-- /ge-wrapper -->
+
+    <div class="arch-connector"><div class="arrow-down"></div></div>
+
+    <!-- Execution Control Plane -->
+    <div class="exec-output">
+      <div class="exec-box">
+        <span class="eb-icon">&#9881;</span>
+        Execution Control Plane &rarr; real tool runs <strong>only</strong> on ALLOW
+      </div>
+    </div>
+
+  </div><!-- /arch-diagram -->
+</section>
+
+<div class="divider"></div>
+
+<!-- ── WHAT IT DOES + CODE ─────────────────────────── -->
+<section class="section" id="core">
+  <div class="section-tag">Core Properties</div>
+  <h2>Structural enforcement, not prompt engineering</h2>
+  <div class="two-col" style="margin-top: 20px;">
+    <ul class="prop-list">
+      <li><span class="ck">&#10003;</span><span><strong>Zero LLM dependencies</strong> &mdash; pure Python structural enforcement</span></li>
+      <li><span class="ck">&#10003;</span><span><strong>Framework-agnostic</strong> &mdash; LangChain, OpenAI Agents SDK, CrewAI</span></li>
+      <li><span class="ck">&#10003;</span><span><strong>Fail-closed</strong> &mdash; errors produce BLOCK, never silent approval</span></li>
+      <li><span class="ck">&#10003;</span><span><strong>Bidirectional</strong> &mdash; outbound + inbound governance</span></li>
+      <li><span class="ck">&#10003;</span><span><strong>Signed audit trail</strong> &mdash; SHA-256 append-only logging</span></li>
+      <li><span class="ck">&#10003;</span><span><strong>Zero dependencies</strong> &mdash; no DB, no Redis, no API server</span></li>
+      <li><span class="ck">&#10003;</span><span><strong>@governed decorator</strong> &mdash; wrap any async function</span></li>
+      <li><span class="ck">&#10003;</span><span><strong>CLI</strong> &mdash; <span class="mono" style="color:var(--amber);font-size:12px">agentctrl demo</span> / <span class="mono" style="color:var(--amber);font-size:12px">validate</span> / <span class="mono" style="color:var(--amber);font-size:12px">init</span></span></li>
+    </ul>
+    <div class="code">
+<span class="kw">from</span> <span class="fn">agentctrl</span> <span class="kw">import</span> RuntimeGateway, ActionProposal
+
+gateway <span class="op">=</span> <span class="fn">RuntimeGateway</span>()
+
+result <span class="op">=</span> <span class="kw">await</span> gateway.<span class="fn">validate</span>(<span class="fn">ActionProposal</span>(
+    agent_id<span class="op">=</span><span class="str">"finance-agent"</span>,
+    action_type<span class="op">=</span><span class="str">"invoice.approve"</span>,
+    action_params<span class="op">=</span>{<span class="str">"amount"</span>: <span class="num">15000</span>},
+    autonomy_level<span class="op">=</span><span class="num">2</span>,
+))
+
+<span class="cm"># ALLOW | ESCALATE | BLOCK</span>
+<span class="fn">print</span>(result.decision)
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── LIVE DEMO ───────────────────────────────────── -->
+<section class="section" id="demo">
+  <div class="section-tag">Live Demo</div>
+  <h2>python -m agentctrl</h2>
+  <p class="desc">6 scenarios. Both outbound and inbound governance. Zero config, zero API keys.</p>
+
+  <div class="terminal">
+    <div class="term-bar">
+      <div class="td r"></div><div class="td y"></div><div class="td g"></div>
+      <span class="term-title">python -m agentctrl</span>
+    </div>
+    <div class="term-body">
+<div class="tl"><span class="br">──────────────────────────────────────────────────────────────────</span></div>
+<div class="tl"><span class="lb">  AgentCTRL — Governance Pipeline Demo</span></div>
+<div class="tl"><span class="d">  Institutional control layer for AI agent actions</span></div>
+<div class="tl"><span class="br">──────────────────────────────────────────────────────────────────</span></div>
+<div class="tl"></div>
+<div class="tl"><span class="d">  1.</span> <span class="lb">Routine invoice — within limits</span>  <span class="d">[outbound]</span></div>
+<div class="tl"><span class="d">     agent=</span><span class="ag">ap_analyst</span>  <span class="d">action=</span><span class="lb">invoice.approve</span></div>
+<div class="tl">     <span class="a">&#10003; ALLOW</span>  <span class="rk">risk=0.20 (LOW)</span></div>
+<div class="tl"><span class="d">     pipeline: ·autonomy ·policy ·authority ·risk ·conflict</span></div>
+<div class="tl"></div>
+<div class="tl"><span class="d">  2.</span> <span class="lb">High-value invoice — exceeds policy threshold</span>  <span class="d">[outbound]</span></div>
+<div class="tl"><span class="d">     agent=</span><span class="ag">ap_analyst</span>  <span class="d">action=</span><span class="lb">invoice.approve</span></div>
+<div class="tl">     <span class="e">&#9888; ESCALATE</span>  <span class="rk">risk=0.25 (LOW)</span></div>
+<div class="tl"><span class="rs">     → Invoice amount exceeds $5,000 autonomous approval threshold.</span></div>
+<div class="tl"></div>
+<div class="tl"><span class="d">  3.</span> <span class="lb">Wire transfer — agent not authorized</span>  <span class="d">[outbound]</span></div>
+<div class="tl"><span class="d">     agent=</span><span class="ag">ap_analyst</span>  <span class="d">action=</span><span class="lb">wire_transfer.execute</span></div>
+<div class="tl">     <span class="bk">&#10007; BLOCK</span>  <span class="rk">risk=0.45 (MEDIUM)</span></div>
+<div class="tl"><span class="rs">     → Agent 'AP Analyst' is not authorized for 'wire_transfer.execute'.</span></div>
+<div class="tl"></div>
+<div class="tl"><span class="d">  4.</span> <span class="lb">PII data query — policy escalation</span>  <span class="d">[outbound]</span></div>
+<div class="tl"><span class="d">     agent=</span><span class="ag">ap_analyst</span>  <span class="d">action=</span><span class="lb">data.read</span></div>
+<div class="tl">     <span class="e">&#9888; ESCALATE</span>  <span class="rk">risk=0.40 (MEDIUM)</span></div>
+<div class="tl"><span class="rs">     → PII data access requires explicit data owner approval.</span></div>
+<div class="tl"></div>
+<div class="tl"><span class="d">  5.</span> <span class="lb">Inbound: unknown agent requests access</span>  <span class="d">[inbound]</span></div>
+<div class="tl"><span class="d">     agent=</span><span class="ag">external-agent-xyz</span>  <span class="d">action=</span><span class="lb">api.access</span></div>
+<div class="tl">     <span class="bk">&#10007; BLOCK</span>  <span class="rk">risk=0.15 (LOW)</span></div>
+<div class="tl"><span class="rs">     → Unverified external agent — action blocked by policy.</span></div>
+<div class="tl"></div>
+<div class="tl"><span class="d">  6.</span> <span class="lb">Inbound: verified partner agent</span>  <span class="d">[inbound]</span></div>
+<div class="tl"><span class="d">     agent=</span><span class="ag">partner-agent-acme</span>  <span class="d">action=</span><span class="lb">api.access</span></div>
+<div class="tl">     <span class="a">&#10003; ALLOW</span>  <span class="rk">risk=0.15 (LOW)</span></div>
+<div class="tl"></div>
+<div class="tl"><span class="br">──────────────────────────────────────────────────────────────────</span></div>
+<div class="tl"><span class="d">  </span><span class="a">2 ALLOWED</span>  <span class="e">2 ESCALATED</span>  <span class="bk">2 BLOCKED</span><span class="d">  — 6 actions evaluated</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── PLATFORM SCOPE ──────────────────────────────── -->
+<section class="section" id="platform">
+  <div class="section-tag">Full Platform</div>
+  <h2>Not just a library</h2>
+  <p class="desc">The open-source library is the distribution wedge. Behind it sits a full-stack governance platform.</p>
+
+  <div class="feat-grid">
+    <div class="feat">
+      <div class="f-head"><div class="f-num">24</div><div class="f-title">API Routers &middot; 203 Endpoints</div></div>
+      <div class="f-desc">FastAPI + Python 3.11. Governance, agents, policies, authority, compliance, settings, health, audit.</div>
+    </div>
+    <div class="feat">
+      <div class="f-head"><div class="f-num">12</div><div class="f-title">Frontend Routes</div></div>
+      <div class="f-desc">Next.js 15 + React 19. Agent fleet, 6-tab agent detail, 7-tab governance, compliance, settings.</div>
+    </div>
+    <div class="feat">
+      <div class="f-head"><div class="f-num">14</div><div class="f-title">Policy Operators</div></div>
+      <div class="f-desc">AND/OR condition groups (depth 3), temporal conditions, lifecycle state machine, priority ordering.</div>
+    </div>
+    <div class="feat">
+      <div class="f-head"><div class="f-num">13</div><div class="f-title">Risk Dimensions</div></div>
+      <div class="f-desc">Trust calibration with per-action-type accuracy, consequence class floors, factor interaction multiplier.</div>
+    </div>
+    <div class="feat">
+      <div class="f-head"><div class="f-num">37</div><div class="f-title">Database Models</div></div>
+      <div class="f-desc">PostgreSQL 17, Alembic migrations, pgvector for RAG, append-only audit triggers, signed SHA-256 trail.</div>
+    </div>
+    <div class="feat">
+      <div class="f-head"><div class="f-num">23</div><div class="f-title">Prometheus Metrics</div></div>
+      <div class="f-desc">Grafana dashboards, circuit breakers, JWT WebSocket live feed, structured logging, kill switch.</div>
+    </div>
+    <div class="feat">
+      <div class="f-head"><div class="f-num">21</div><div class="f-title">Built-in Tools</div></div>
+      <div class="f-desc">Web, file, code, communication, data, knowledge, finance. Plus MCP adapter for dynamic tool discovery.</div>
+    </div>
+    <div class="feat">
+      <div class="f-head"><div class="f-num">3</div><div class="f-title">SDK Adapters</div></div>
+      <div class="f-desc">LangChain / LangGraph, OpenAI Agents SDK, CrewAI. One-line <span class="mono" style="font-size:11px;color:var(--amber)">govern_tool()</span> for each.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── STRATEGY ─────────────────────────────────────── -->
+<section class="section" id="strategy">
+  <div class="section-tag">Strategy</div>
+  <h2>Library-first open-core model</h2>
+
+  <div class="strat-row" style="margin-top: 20px;">
+    <div class="strat-card pub">
+      <div class="sc-title">Public Library (Apache 2.0)</div>
+      <div class="sc-body"><span class="mono" style="color:var(--allow);font-size:11px;">pip install agentctrl</span><br>Full governance pipeline, 5 stages, CLI, @governed decorator, 3 adapters. Zero dependencies. 82 tests.</div>
+      <div class="sc-tag">Open Source</div>
+    </div>
+    <div class="strat-card priv">
+      <div class="sc-title">Private Platform</div>
+      <div class="sc-body">Next.js UI, FastAPI backend, PostgreSQL, Redis, Prometheus. Agent fleet, escalation workflows, compliance, trust economics.</div>
+      <div class="sc-tag">Monetization</div>
+    </div>
+  </div>
+
+  <div style="margin-top: 16px;">
+    <div class="section-tag" style="margin-bottom: 8px;">Tech Stack</div>
+    <div class="tech-pills">
+      <span class="tech-pill">Python 3.11+</span>
+      <span class="tech-pill">FastAPI</span>
+      <span class="tech-pill">Next.js 15</span>
+      <span class="tech-pill">React 19</span>
+      <span class="tech-pill">TypeScript</span>
+      <span class="tech-pill">PostgreSQL 17</span>
+      <span class="tech-pill">Redis</span>
+      <span class="tech-pill">SQLAlchemy 2.0</span>
+      <span class="tech-pill">LangGraph</span>
+      <span class="tech-pill">NetworkX</span>
+      <span class="tech-pill">Prometheus</span>
+      <span class="tech-pill">Docker Compose</span>
+      <span class="tech-pill">Tailwind CSS</span>
+      <span class="tech-pill">Zustand</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ──────────────────────────────────────── -->
+<div class="footer">
+  <strong style="font-family:'Fraunces',serif;color:var(--mahogany);">AgentCTRL</strong> &mdash; Built by <a href="https://moeintel.ai">MoeIntel</a> &middot; Created by <a href="https://github.com/moeadnan">Mohammad Abu Jafar</a><br>
+  <a href="https://pypi.org/project/agentctrl/">PyPI</a> &middot; <a href="https://github.com/moeintel/AgentCTRL">GitHub</a>
+</div>
+
+<script>
+(function() {
+  var ids = ['introduction','pipeline','core','demo','platform','strategy'];
+  var links = document.querySelectorAll('#toc a');
+  var sections = ids.map(function(id) { return document.getElementById(id); });
+
+  function update() {
+    var scrollY = window.scrollY + window.innerHeight * 0.35;
+    var active = 0;
+    for (var i = sections.length - 1; i >= 0; i--) {
+      if (sections[i] && sections[i].offsetTop <= scrollY) { active = i; break; }
+    }
+    links.forEach(function(link, idx) {
+      if (idx === active) link.classList.add('active');
+      else link.classList.remove('active');
+    });
+  }
+
+  window.addEventListener('scroll', update, { passive: true });
+  update();
+})();
+</script>
+</body>
+</html>
