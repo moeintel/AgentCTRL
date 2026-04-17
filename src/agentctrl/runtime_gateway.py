@@ -69,9 +69,7 @@ class RuntimeGateway:
         1: [],          # All actions require human approval
         2: ["read", "query", "search", "summarize", "extract", "validate", "classify",
             "invoice", "data", "report", "audit"],   # routine ops; policy engine further governs
-        3: ["*"],       # All actions within policy bounds
-        4: ["*"],       # Full autonomy
-        5: ["*"],       # Full independence — unrestricted within platform
+        3: ["*"],       # All actions within policy bounds — full autonomy within governance
     }
 
     def __init__(

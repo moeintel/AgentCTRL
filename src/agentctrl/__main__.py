@@ -115,8 +115,6 @@ DEMO_AUTONOMY_SCOPES = {
     1: [],
     2: ["read", "query", "search", "summarize", "invoice", "data", "report", "api"],
     3: ["*"],
-    4: ["*"],
-    5: ["*"],
 }
 
 

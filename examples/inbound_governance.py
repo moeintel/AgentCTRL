@@ -75,7 +75,7 @@ INBOUND_POLICIES = [
 INBOUND_AUTONOMY = {
     0: [], 1: [],
     2: ["customer", "data", "api", "query", "read", "search"],
-    3: ["*"], 4: ["*"], 5: ["*"],
+    3: ["*"],
 }
 
 

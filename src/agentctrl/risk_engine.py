@@ -198,29 +198,49 @@ class RiskEngine:
                 "value": f"Daily exposure: ${daily_exposure:,.0f} (threshold: ${exp_threshold:,.0f})",
             })
 
-        # Trust calibration — bidirectional risk adjustment based on agent track record.
-        # New agents (< new_agent_threshold actions) receive a risk surcharge.
-        # Proven agents (50+ actions, >90% success) receive a risk discount.
+        # Trust calibration — self-adjusting risk modifier.
+        # Uses per-action-type success rate when available (falls back to
+        # global).  Scales surcharge/discount by calibration_accuracy: the
+        # system's own prediction accuracy for this (agent, action_type).
         trust_ctx = getattr(proposal, "trust_context", None) or {}
-        trust_total_actions = trust_ctx.get("total_actions", 0)
-        trust_success_rate = trust_ctx.get("success_rate", 0.0)
-        new_agent_threshold = self._factors.get("new_agent_premium", {}).get("threshold", 5)
-        new_agent_weight = self._factors.get("new_agent_premium", {}).get("weight", 0.35)
-        if trust_total_actions < new_agent_threshold:
-            total += new_agent_weight
+        action_trust = trust_ctx.get("action_trust", {})
+        calibration_accuracy = trust_ctx.get("calibration_accuracy", 1.0)
+
+        at_total = action_trust.get("total_actions", 0)
+        effective_total = at_total if at_total > 0 else trust_ctx.get("total_actions", 0)
+        effective_rate = (
+            action_trust.get("success_rate", 0.0) if at_total > 0
+            else trust_ctx.get("success_rate", 0.0)
+        )
+
+        maturity_threshold = self._factors.get("new_agent_premium", {}).get("threshold", 5)
+        max_surcharge = self._factors.get("new_agent_premium", {}).get("weight", 0.35)
+        max_discount = 0.15
+        eff_surcharge = max_surcharge * calibration_accuracy
+        eff_discount = max_discount * calibration_accuracy
+
+        if effective_total < maturity_threshold:
+            fraction = 1.0 - (effective_total / maturity_threshold)
+            contribution = round(eff_surcharge * fraction, 3)
+            total += contribution
+            cal_note = f" (cal={calibration_accuracy:.0%})" if calibration_accuracy < 1.0 else ""
             factors.append({
                 "factor": "trust_calibration",
-                "contribution": round(new_agent_weight, 3),
-                "value": f"New agent — {trust_total_actions} prior actions (threshold: {new_agent_threshold})",
+                "contribution": contribution,
+                "value": f"New agent — {effective_total}/{maturity_threshold} actions toward maturity{cal_note}",
             })
-        elif trust_total_actions >= 50 and trust_success_rate > 0.90:
-            trust_discount = min(0.15, (trust_success_rate - 0.90) * 1.5)
-            total = max(0.01, total - trust_discount)
-            factors.append({
-                "factor": "trust_calibration",
-                "contribution": -round(trust_discount, 3),
-                "value": f"Success rate {trust_success_rate:.1%} over {trust_total_actions} actions",
-            })
+        elif effective_total >= maturity_threshold and effective_rate > 0.70:
+            experience = min(effective_total / 50.0, 1.0)
+            quality = max(0.0, (effective_rate - 0.70) / 0.30)
+            trust_discount = round(min(eff_discount, eff_discount * experience * quality), 3)
+            if trust_discount > 0:
+                total = max(0.01, total - trust_discount)
+                cal_note = f" (cal={calibration_accuracy:.0%})" if calibration_accuracy < 1.0 else ""
+                factors.append({
+                    "factor": "trust_calibration",
+                    "contribution": -trust_discount,
+                    "value": f"Track record: {effective_rate:.1%} over {effective_total} actions{cal_note}",
+                })
 
         # Factor interaction multiplier — 3+ active factors amplify combined risk
         active_risk_factors = len([f for f in factors if f["factor"] != "base_action_risk" and f.get("contribution", 0) > 0])

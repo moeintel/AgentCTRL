@@ -6,6 +6,20 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This pr
 
 ---
 
+## [0.2.3] — 2026-04-17
+
+### Added
+- **Per-action-type trust signals.** `trust_context["action_trust"]` with per-action-type `total_actions` and `success_rate` now override the global trust signals when scoring. An agent can demonstrate action-specific proficiency independent of overall track record (e.g. proven at `search`, new at `write_file`).
+- **Calibration-accuracy weighting.** `trust_context["calibration_accuracy"]` (0.0–1.0) scales both the new-agent surcharge and the proven-agent discount. Low calibration accuracy shrinks the magnitude of the trust adjustment, so unreliable prediction history does not aggressively push decisions.
+- Default policy now covers autonomy levels 4 and 5 (full autonomy, full independence). Previously the example policy capped at level 3.
+- 3 new tests: `test_calibration_accuracy_scales_discount`, `test_action_trust_overrides_global`, `test_calibration_accuracy_scales_surcharge`.
+
+### Changed
+- Trust-calibration contribution message now includes `(cal=NN%)` when calibration accuracy is below 1.0, surfacing the weighting in the decision record.
+- Test count: 79 → 82.
+
+---
+
 ## [0.2.2] — 2026-04-12
 
 ### Added

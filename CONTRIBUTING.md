@@ -33,7 +33,7 @@ This installs the library in editable mode with all optional dependencies (netwo
 python -m pytest tests/ -v
 ```
 
-79 tests total (78 pass, 1 skipped). No external services required — everything runs in-process.
+82 tests total (81 pass, 1 skipped). No external services required — everything runs in-process.
 
 ---
 

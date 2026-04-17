@@ -76,7 +76,7 @@ Those are institutional controls. They existed for human employees. They need to
 - **Fail-closed.** Any pipeline error produces BLOCK, never silent approval.
 - **Structural enforcement.** Policies are operator-based rule matching, not prompt instructions. Authority is graph traversal. Risk is weighted factor scoring. None of this is prompt engineering.
 
-> **Status:** 79 tests passing. Published on [PyPI](https://pypi.org/project/agentctrl/).
+> **Status:** 82 tests passing. Published on [PyPI](https://pypi.org/project/agentctrl/).
 
 ---
 
@@ -320,7 +320,7 @@ Authority is opt-in. When no graph is configured, the authority check passes. Co
 
 ### Risk Scoring
 
-Deterministic factor-based scoring across 13 dimensions: base action risk, high-value transaction, novel vendor, off-hours activity, data sensitivity, rate pressure, velocity, behavioral anomaly, cumulative exposure, input confidence, trust calibration (agents with 50+ governed actions and >90% success rate earn up to 15% reduction), factor interaction (3+ concurrent factors trigger compounding), and consequence class floors (irreversible actions never score LOW).
+Deterministic factor-based scoring across 13 dimensions: base action risk, high-value transaction, novel vendor, off-hours activity, data sensitivity, rate pressure, velocity, behavioral anomaly, cumulative exposure, input confidence, trust calibration (new agents face surcharge that decays to zero at maturity, proven agents earn up to 15% reduction scaled by prediction accuracy), factor interaction (3+ concurrent factors trigger compounding), and consequence class floors (irreversible actions never score LOW).
 
 ### Conflict Detection
 
@@ -401,7 +401,7 @@ result = await gateway.validate(proposal)
 python -m pytest tests/ -v
 ```
 
-79 tests covering: pipeline stages, advisory context, fail-closed behavior, policy evaluation (AND/OR groups, 14 operators, temporal conditions), authority graph (delegation, SoD, limits, decay), risk scoring (13 dimensions, trust calibration, consequence class), conflict detection, `@governed` decorator, CLI, demo, audit logging, subscriptable record, empty authority default, instance isolation, and library boundary.
+82 tests covering: pipeline stages, advisory context, fail-closed behavior, policy evaluation (AND/OR groups, 14 operators, temporal conditions), authority graph (delegation, SoD, limits, decay), risk scoring (13 dimensions, trust calibration with accuracy scaling and action-type override, consequence class), conflict detection, `@governed` decorator, CLI, demo, audit logging, subscriptable record, empty authority default, instance isolation, and library boundary.
 
 ## Requirements
 
