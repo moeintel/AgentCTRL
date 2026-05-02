@@ -188,7 +188,7 @@ def main():
     )
     run_p.add_argument("goal", help="Plain-English goal for the agent.")
     run_p.add_argument("--provider", default="openai",
-                       choices=["openai", "anthropic", "ollama", "k2think"],
+                       choices=["openai", "anthropic"],
                        help="LLM provider (Phase 15 / T1.12). Default openai.")
     run_p.add_argument("--model", default="",
                        help="Model name (provider-specific; leave empty for the provider's default).")

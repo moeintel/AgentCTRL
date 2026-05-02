@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "agentctrl"
-version = "0.3.0"
+version = "0.3.1"
 description = "Institutional control layer for AI agent actions — authority, policy, risk, and audit before execution."
 readme = "README.md"
 license = "Apache-2.0"
@@ -57,10 +57,8 @@ run = [
     "httpx>=0.28",
 ]
 # Additional LLM providers for the `run` CLI's --provider flag (Phase 15 / T1.12).
-# Each is opt-in so installing the base `run` set stays lean.  K2 Think is
-# open-weights and served via Ollama (or any OpenAI-compatible gateway).
+# Each is opt-in so installing the base `run` set stays lean.
 run-anthropic = ["langchain-anthropic>=0.2"]
-run-ollama    = ["langchain-ollama>=0.2"]
 all = [
     "networkx>=3.0",
     "langchain-core>=0.2",

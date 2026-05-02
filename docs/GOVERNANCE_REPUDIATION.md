@@ -37,7 +37,7 @@ AgentCTRL's decisions are **repudiable**: given the identical `ActionProposal`, 
 
 ## 5. How to prove it yourself
 
-1. `grep -rn "ainvoke\|chat_complet\|openai\|anthropic\|litellm\|langchain_openai\|langchain_anthropic\|langchain_ollama" packages/agentctrl/src/agentctrl/{runtime_gateway,policy_engine,authority_graph,risk_engine,conflict_detector}.py` returns **nothing**.
+1. `grep -rn "ainvoke\|chat_complet\|openai\|anthropic\|litellm\|langchain_openai\|langchain_anthropic" packages/agentctrl/src/agentctrl/{runtime_gateway,policy_engine,authority_graph,risk_engine,conflict_detector}.py` returns **nothing**.
 2. `python -c "import inspect, agentctrl; src = inspect.getsource(agentctrl.RuntimeGateway.validate); assert 'llm' not in src.lower()"` passes.
 3. The `run` CLI (`agentctrl run --provider …`) explicitly swaps providers per-run without touching governance — see `PHASE_15_REPORT.md`. The moat is the same regardless of model.
 

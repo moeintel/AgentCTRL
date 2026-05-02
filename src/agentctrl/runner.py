@@ -538,9 +538,8 @@ def _require_langchain_core() -> Any:
                 "The `run` command needs the optional `run` extras.\n"
                 "Install with:\n"
                 "  pip install 'agentctrl[run]'\n\n"
-                "For non-OpenAI providers, also install:\n"
-                "  pip install 'agentctrl[run-anthropic]'   # Claude\n"
-                "  pip install 'agentctrl[run-ollama]'      # Ollama / K2 Think\n",
+                "For Anthropic Claude, also install:\n"
+                "  pip install 'agentctrl[run-anthropic]'\n",
                 _C_YELLOW,
             ),
             file=sys.stderr,
@@ -554,21 +553,15 @@ def _require_langchain_core() -> Any:
 # swapping providers is a pure surface concern.  Providers supported:
 #   openai     — any OpenAI chat model (gpt-4o, gpt-4o-mini, …).  Default.
 #   anthropic  — Claude Sonnet/Haiku/Opus via langchain-anthropic.
-#   ollama     — any Ollama-served model (llama3, mistral, qwen, …).
-#   k2think    — alias for an Ollama-served K2 Think model (open weights,
-#                sovereignty-aligned).  Uses langchain-ollama under the hood.
 #
 # The factory deliberately does NOT swallow import errors — if the user
-# asks for `anthropic`/`ollama`/`k2think`, we print an exact install hint
-# and exit cleanly.
+# asks for `anthropic`, we print an exact install hint and exit cleanly.
 
 
 def _provider_default_model(provider: str) -> str:
     return {
         "openai":    "gpt-4o-mini",
         "anthropic": "claude-3-5-sonnet-latest",
-        "ollama":    "llama3.2",
-        "k2think":   "k2-think",  # served by Ollama or compatible gateway
     }.get(provider, "gpt-4o-mini")
 
 
@@ -576,8 +569,6 @@ def _provider_required_env(provider: str) -> str | None:
     return {
         "openai":    "OPENAI_API_KEY",
         "anthropic": "ANTHROPIC_API_KEY",
-        "ollama":    None,   # Ollama uses OLLAMA_HOST (optional, defaults to localhost)
-        "k2think":   None,
     }.get(provider)
 
 
@@ -606,16 +597,8 @@ def _make_llm(provider: str, model: str, tool_schemas: list[dict]) -> Any:
             sys.exit(2)
         return ChatAnthropic(model=model, temperature=0.1).bind_tools(tool_schemas)
 
-    if provider in ("ollama", "k2think"):
-        try:
-            from langchain_ollama import ChatOllama  # type: ignore[import-not-found]
-        except ImportError:
-            print(_color("pip install 'agentctrl[run-ollama]'", _C_YELLOW), file=sys.stderr)
-            sys.exit(2)
-        return ChatOllama(model=model, temperature=0.1).bind_tools(tool_schemas)
-
     print(_color(
-        f"Unknown --provider '{provider}'.  Valid: openai, anthropic, ollama, k2think.",
+        f"Unknown --provider '{provider}'.  Valid: openai, anthropic.",
         _C_RED,
     ), file=sys.stderr)
     sys.exit(2)

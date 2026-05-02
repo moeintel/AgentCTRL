@@ -6,6 +6,40 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). This pr
 
 ---
 
+## [0.3.1] — 2026-05-01
+
+### Changed — Provider matrix narrowed
+
+`agentctrl run` now supports `openai` and `anthropic` only.
+
+- `--provider` choices are now `openai` and `anthropic`.
+- The corresponding self-hosted install extra has been removed; no
+  third-party LangChain provider package ships as a runtime dependency
+  under any extra.
+- Existing scripts that pass an unsupported `--provider` value will exit
+  with a clear "Unknown --provider" error.
+
+The governance pipeline remains model-agnostic by construction
+(zero-LLM-in-pipeline). Narrowing the runner's provider menu does not
+change what the gateway can govern — `RuntimeGateway.validate()` has no
+LLM dependencies and works identically against any model behind any
+runtime, including self-hosted ones invoked from your own driver script
+via `run_agent`.
+
+### Migration
+
+```diff
+- agentctrl run --provider <removed-provider> "..."
++ agentctrl run --provider openai "..."   # or --provider anthropic
+```
+
+If you need to drive a self-hosted LLM, build your own LangChain-style
+chat model and pass it directly to `run_agent` from a driver script.
+The pipeline still governs every tool call regardless of which model
+produced the proposal.
+
+---
+
 ## [0.3.0] — 2026-04-19
 
 ### Added — Pluggable rate-limit backend protocol
